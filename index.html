@@ -1,1 +1,217 @@
-�P�Q�R�S�T�U�V
+&lt;!DOCTYPE html&gt;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>今どこ救R QR生成</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+
+<style>
+body { font-family:sans-serif; text-align:center; padding:10px; background:#f4f4f4; }
+.container { background:white; max-width:450px; margin:auto; padding:20px; border-radius:10px; }
+
+.input-row { margin-bottom:12px; text-align:left; }
+input {
+  width:100%; padding:10px; font-size:16px;
+  border:1px solid #ccc; border-radius:4px;
+}
+
+#finalCanvas {
+  display:block; margin:20px auto; border:1px solid #ccc;
+  width:350px; height:350px;
+}
+
+.btn {
+  padding:15px; width:100%; font-size:18px;
+  border:none; border-radius:5px; margin-top:10px;
+}
+
+.generate-btn { background:#007bff; color:white; }
+.download-btn { background:#28a745; color:white; }
+
+.count { font-weight:bold; margin:10px 0; }
+.lock { color:red; font-weight:bold; margin-top:10px; }
+
+.note { font-size:14px; margin-bottom:15px; line-height:1.6; }
+</style>
+
+<div class="container">
+  <h2>今どこ救R QR生成</h2>
+
+  <div class="note">
+    「今どこ救R 生成内容」に全角で14文字くらいを2行入れてください。<br>
+    最大20文字まで入力できます。
+  </div>
+
+  <div class="input-row">
+    <label>1行目：名前</label>
+    <input type="text" id="nameInput" maxlength="20">
+  </div>
+
+  <div class="input-row">
+    <label>2行目：連絡先</label>
+    <input type="text" id="contactInput" maxlength="20">
+  </div>
+
+  <div id="countInfo" class="count"></div>
+
+  <button onclick="generateQRCode()" class="btn generate-btn">
+    QRコード作成
+  </button>
+
+  <canvas id="finalCanvas" width="350" height="350"></canvas>
+
+  <div style="font-size:14px; margin-top:10px;">
+    写メか保存を押してください
+  </div>
+
+  <button onclick="downloadQRCodeImage()" class="btn download-btn">
+    画像を保存
+  </button>
+
+  <!-- 有料 -->
+  <div id="premiumArea" style="display:none; margin-top:20px;">
+    <div class="lock">無料回数が終了しました</div>
+
+    <a href="https://example.com" target="_blank">
+      <button class="btn" style="background:#ff9800;color:white;">
+        有料版はこちら
+      </button>
+    </a>
+
+    <input type="text" id="passwordInput" placeholder="パスワード入力">
+    <button onclick="unlockPremium()" class="btn">
+      パスワード解除
+    </button>
+  </div>
+
+</div>
+
+<script>
+// ===== 状態 =====
+let maxCount = Number(localStorage.getItem("maxCount")) || 10;
+let usedCount = Number(localStorage.getItem("usedCount")) || 0;
+let locked = localStorage.getItem("locked") === "true";
+
+// ===== 表示更新 =====
+function updateDisplay() {
+    if (locked) {
+        document.getElementById("countInfo").innerText = "使用不可（ロック中）";
+        document.getElementById("premiumArea").style.display = "block";
+    } else {
+        document.getElementById("countInfo").innerText =
+            "残り生成回数：" + (maxCount - usedCount) + "回";
+    }
+}
+updateDisplay();
+
+// ===== 入力制限（完全固定20文字）=====
+document.getElementById("nameInput").addEventListener("input", function(){
+    this.value = this.value.slice(0,20);
+});
+document.getElementById("contactInput").addEventListener("input", function(){
+    this.value = this.value.slice(0,20);
+});
+
+// ===== QR生成 =====
+function generateQRCode() {
+
+    if (locked) return;
+
+    if (usedCount >= maxCount) {
+        locked = true;
+        localStorage.setItem("locked", true);
+        updateDisplay();
+        return;
+    }
+
+    const name = document.getElementById("nameInput").value.slice(0,20);
+    const contact = document.getElementById("contactInput").value.slice(0,20);
+
+    if (!name || !contact) {
+        alert("名前と連絡先を入力してください");
+        return;
+    }
+
+    const textData = name + "\n" + contact;
+
+    usedCount++;
+    localStorage.setItem("usedCount", usedCount);
+
+    updateDisplay();
+
+    const canvas = document.getElementById("finalCanvas");
+    const ctx = canvas.getContext("2d");
+    const size = 350;
+
+    const qr = qrcode(0, 'H');
+    qr.addData(unescape(encodeURIComponent(textData)));
+    qr.make();
+
+    const qrSize = size * 0.75;
+    const margin = (size - qrSize) / 2;
+    const tileW = qrSize / qr.getModuleCount();
+
+    ctx.fillStyle = "white";
+    ctx.fillRect(0,0,size,size);
+    ctx.fillStyle = "black";
+
+    for (let r=0;r<qr.getModuleCount();r++){
+        for (let c=0;c<qr.getModuleCount();c++){
+            if (qr.isDark(r,c)){
+                ctx.fillRect(margin + c*tileW, margin + r*tileW, tileW, tileW);
+            }
+        }
+    }
+
+    // 中央文字
+    const labelText = "今どこ救Ｒ";
+    ctx.font = "bold 20px sans-serif";
+    const textWidth = ctx.measureText(labelText).width;
+
+    ctx.fillStyle="white";
+    ctx.fillRect(size/2 - textWidth/2 -4, size/2-14, textWidth+8,28);
+
+    ctx.fillStyle="black";
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
+    ctx.fillText(labelText, size/2, size/2);
+
+    // 上下文字
+    ctx.font="bold 18px sans-serif";
+    ctx.fillText("緊急連絡先", size/2, margin-10);
+    ctx.fillText("QRから電話", size/2, size-margin+25);
+}
+
+// ===== 保存 =====
+function downloadQRCodeImage() {
+    const canvas = document.getElementById("finalCanvas");
+    const link = document.createElement("a");
+    link.download = "imadoko_qr.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+}
+
+// ===== 有料解除 =====
+function unlockPremium() {
+    const pass = document.getElementById("passwordInput").value;
+
+    if (pass === "1234") { // ←任意変更
+        maxCount = 100;
+        usedCount = 0;
+        locked = false;
+
+        localStorage.setItem("maxCount", maxCount);
+        localStorage.setItem("usedCount", usedCount);
+        localStorage.setItem("locked", false);
+
+        alert("有料版が有効になりました（100回）");
+        updateDisplay();
+    } else {
+        alert("パスワードが違います");
+    }
+}
+</script>
+
+***********
+<center><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td><div style="border:1px solid #95a5a6;border-radius:.75rem;background-color:#FFFFFF;width:280px;margin:0px;padding:5px;text-align:center;overflow:hidden;"><table><tbody><tr><td style="width:128px"><a href="https://hb.afl.rakuten.co.jp/ichiba/4f77a9cd.e4d32c60.4f77a9ce.31978a5d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Festelia%2Fqr_seal%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIxMjh4MTI4IiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;"><img src="https://hbb.afl.rakuten.co.jp/hgb/4f77a9cd.e4d32c60.4f77a9ce.31978a5d/?me_id=1217542&item_id=10000174&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Festelia%2Fcabinet%2Fqrtan.jpg%3F_ex%3D128x128&s=128x128&t=picttext" border="0" style="margin:2px" alt="[商品価格に関しましては、リンクが作成された時点と現時点で情報が変更されている場合がございます。]" title="[商品価格に関しましては、リンクが作成された時点と現時点で情報が変更されている場合がございます。]"></a></td><td style="vertical-align:top;width:136px;display: block;"><p style="font-size:12px;line-height:1.4em;text-align:left;margin:0px;padding:2px 6px;word-wrap:break-word"><a href="https://hb.afl.rakuten.co.jp/ichiba/4f77a9cd.e4d32c60.4f77a9ce.31978a5d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Festelia%2Fqr_seal%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIxMjh4MTI4IiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;">【ポイント5倍】大感謝祭 【送料無料】 LINE、Instagram、Litlink等への誘導、年賀状や名刺用に最適QRコードシール 15mm角は180枚セット 自由文字列 通常メール便発送 QRコード 名刺用 二次元バーコード 自由入力 メール便</a><br><span>価格：900円（税込、送料無料)</span> <span style="color:#BBB">(2025/12/24時点)</span></p></td></tr></tbody></table></div><br><p style="color:#000000;font-size:12px;line-height:1.4em;margin:5px;word-wrap:break-word"><br></p></td></tr></tbody></table></center>
+***********
