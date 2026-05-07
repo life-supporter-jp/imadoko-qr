@@ -1,99 +1,272 @@
 <!DOCTYPE html>
+<html lang="ja">
+<head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 <title>今どこ救R QR生成</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 
 <style>
-body { font-family:sans-serif; text-align:center; padding:10px; background:#f4f4f4; }
-.container { background:white; max-width:450px; margin:auto; padding:20px; border-radius:10px; }
 
-.input-row { margin-bottom:12px; text-align:left; }
-input {
-  width:100%; padding:10px; font-size:16px;
-  border:1px solid #ccc; border-radius:4px;
+/* =========================
+   全体共通
+========================= */
+*{
+    box-sizing:border-box;
 }
 
-#finalCanvas {
-  display:block;
-  margin:20px auto;
-  border:1px solid #ccc;
+/* =========================
+   body
+========================= */
+body{
+    font-family:sans-serif;
+    background:#f4f4f4;
 
-  width:100%;
-  max-width:350px;
-  height:auto;
-  aspect-ratio:1 / 1;
+    margin:0 auto !important;
+    padding:20px;
+
+    width:100%;
+    max-width:800px;
+
+    overflow-x:hidden;
+
+    text-align:center;
 }
 
-.btn {
-  padding:15px; width:100%; font-size:18px;
-  border:none; border-radius:5px; margin-top:10px;
+/* =========================
+   画像最適化
+========================= */
+img{
+    max-width:100% !important;
+    height:auto !important;
+    display:block;
+    margin:10px auto;
 }
 
-.generate-btn { background:#007bff; color:white; }
-.download-btn { background:#28a745; color:white; }
+/* =========================
+   コンテナ
+========================= */
+.container{
+    background:white;
 
-.count { font-weight:bold; margin:10px 0; }
-.lock { color:red; font-weight:bold; margin-top:10px; }
+    width:100%;
+    max-width:450px;
 
-.note { font-size:14px; margin-bottom:15px; line-height:1.6; }
+    margin:20px auto;
+
+    padding:20px;
+
+    border-radius:12px;
+
+    box-shadow:0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* =========================
+   入力欄
+========================= */
+.input-row{
+    margin-bottom:12px;
+    text-align:left;
+}
+
+label{
+    display:block;
+    margin-bottom:6px;
+    font-weight:bold;
+    color:#555;
+}
+
+input{
+    width:100%;
+
+    padding:12px;
+
+    font-size:16px;
+
+    border:1px solid #ccc;
+
+    border-radius:8px;
+
+    background:#fff;
+}
+
+/* =========================
+   QR表示
+========================= */
+#finalCanvas{
+    display:block;
+
+    margin:20px auto;
+
+    border:1px solid #ccc;
+
+    width:100%;
+    max-width:350px;
+
+    height:auto;
+
+    aspect-ratio:1 / 1;
+
+    background:white;
+}
+
+/* =========================
+   ボタン
+========================= */
+.btn{
+    width:100%;
+
+    padding:15px;
+
+    font-size:18px;
+
+    border:none;
+
+    border-radius:8px;
+
+    margin-top:10px;
+
+    cursor:pointer;
+}
+
+.generate-btn{
+    background:#007bff;
+    color:white;
+}
+
+.download-btn{
+    background:#28a745;
+    color:white;
+}
+
+/* =========================
+   テキスト
+========================= */
+.count{
+    font-weight:bold;
+    margin:10px 0;
+}
+
+.lock{
+    color:red;
+    font-weight:bold;
+    margin-top:10px;
+}
+
+.note{
+    font-size:14px;
+    margin-bottom:15px;
+    line-height:1.6;
+}
+
+/* =========================
+   footer
+========================= */
+.footer-info{
+    width:100%;
+    max-width:800px;
+    margin:30px auto;
+}
+
+.info-text{
+    font-size:16px;
+    line-height:1.8;
+    text-align:left;
+    padding:10px;
+}
+
+/* =========================
+   スマホ調整
+========================= */
+@media (max-width:768px){
+
+    body{
+        padding:10px;
+    }
+
+    .container{
+        padding:15px;
+    }
+
+    .btn{
+        font-size:16px;
+        padding:14px;
+    }
+
+    .info-text{
+        font-size:15px;
+    }
+}
+
 </style>
-<img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012099.jpg" style="display: block; margin: auto;">
+</head>
+
+<body>
+
+<img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012099.jpg">
 
 <div class="container">
-  <h2>今どこ救R QR生成</h2>
 
-  <div class="note">
-    「今どこ救R 生成内容」に全角で14文字くらいを2行入れてください。<br>
-    最大20文字まで入力できます。
-  </div>
+    <h2>今どこ救R QR生成</h2>
 
-  <div class="input-row">
-    <label>1行目：名前</label>
-    <input type="text" id="nameInput" maxlength="20">
-  </div>
+    <div class="note">
+        「今どこ救R 生成内容」に全角で14文字くらいを2行入れてください。<br>
+        最大20文字まで入力できます。
+    </div>
 
-  <div class="input-row">
-    <label>2行目：連絡先</label>
-    <input type="text" id="contactInput" maxlength="20">
-  </div>
+    <div class="input-row">
+        <label>1行目：名前</label>
+        <input type="text" id="nameInput" maxlength="20">
+    </div>
 
-  <div id="countInfo" class="count"></div>
+    <div class="input-row">
+        <label>2行目：連絡先</label>
+        <input type="text" id="contactInput" maxlength="20">
+    </div>
 
-  <button onclick="generateQRCode()" class="btn generate-btn">
-    QRコード作成
-  </button>
+    <div id="countInfo" class="count"></div>
 
-  <canvas id="finalCanvas" width="350" height="350"></canvas>
-
-  <div style="font-size:14px; margin-top:10px;">
-    写メか保存を押してください
-  </div>
-
-  <button onclick="downloadQRCodeImage()" class="btn download-btn">
-    画像を保存
-  </button>
-
-  <!-- 有料 -->
-  <div id="premiumArea" style="display:none; margin-top:20px;">
-    <div class="lock">無料回数が終了しました</div>
-
-    <a href="https://example.com" target="_blank">
-      <button class="btn" style="background:#ff9800;color:white;">
-        有料版はこちら
-      </button>
-    </a>
-
-    <input type="text" id="passwordInput" placeholder="パスワード入力">
-    <button onclick="unlockPremium()" class="btn">
-      パスワード解除
+    <button onclick="generateQRCode()" class="btn generate-btn">
+        QRコード作成
     </button>
-  </div>
+
+    <canvas id="finalCanvas" width="350" height="350"></canvas>
+
+    <div style="font-size:14px; margin-top:10px;">
+        写メか保存を押してください
+    </div>
+
+    <button onclick="downloadQRCodeImage()" class="btn download-btn">
+        画像を保存
+    </button>
+
+    <!-- 有料 -->
+    <div id="premiumArea" style="display:none; margin-top:20px;">
+
+        <div class="lock">
+            無料回数が終了しました
+        </div>
+
+        <a href="https://example.com" target="_blank">
+            <button class="btn" style="background:#ff9800;color:white;">
+                有料版はこちら
+            </button>
+        </a>
+
+        <input type="text" id="passwordInput" placeholder="パスワード入力">
+
+        <button onclick="unlockPremium()" class="btn">
+            パスワード解除
+        </button>
+
+    </div>
 
 </div>
 
 <script>
+
 // ===== 状態 =====
 let maxCount = Number(localStorage.getItem("maxCount")) || 10;
 let usedCount = Number(localStorage.getItem("usedCount")) || 0;
@@ -101,22 +274,37 @@ let locked = localStorage.getItem("locked") === "true";
 
 // ===== 表示更新 =====
 function updateDisplay() {
+
     if (locked) {
-        document.getElementById("countInfo").innerText = "使用不可（ロック中）";
-        document.getElementById("premiumArea").style.display = "block";
+
+        document.getElementById("countInfo").innerText =
+            "使用不可（ロック中）";
+
+        document.getElementById("premiumArea").style.display =
+            "block";
+
     } else {
+
         document.getElementById("countInfo").innerText =
             "残り生成回数：" + (maxCount - usedCount) + "回";
     }
 }
+
 updateDisplay();
 
-// ===== 入力制限（完全固定20文字）=====
-document.getElementById("nameInput").addEventListener("input", function(){
+// ===== 入力制限 =====
+document.getElementById("nameInput")
+.addEventListener("input", function(){
+
     this.value = this.value.slice(0,20);
+
 });
-document.getElementById("contactInput").addEventListener("input", function(){
+
+document.getElementById("contactInput")
+.addEventListener("input", function(){
+
     this.value = this.value.slice(0,20);
+
 });
 
 // ===== QR生成 =====
@@ -125,211 +313,404 @@ function generateQRCode() {
     if (locked) return;
 
     if (usedCount >= maxCount) {
+
         locked = true;
+
         localStorage.setItem("locked", true);
+
         updateDisplay();
+
         return;
     }
 
-    const name = document.getElementById("nameInput").value.slice(0,20);
-    const contact = document.getElementById("contactInput").value.slice(0,20);
+    const name =
+        document.getElementById("nameInput")
+        .value.slice(0,20);
+
+    const contact =
+        document.getElementById("contactInput")
+        .value.slice(0,20);
 
     if (!name || !contact) {
+
         alert("名前と連絡先を入力してください");
+
         return;
     }
 
     const textData = name + "\n" + contact;
 
     usedCount++;
+
     localStorage.setItem("usedCount", usedCount);
 
     updateDisplay();
 
-    const canvas = document.getElementById("finalCanvas");
-    const ctx = canvas.getContext("2d");
+    const canvas =
+        document.getElementById("finalCanvas");
+
+    const ctx =
+        canvas.getContext("2d");
+
     const size = 350;
 
     const qr = qrcode(0, 'H');
-    qr.addData(unescape(encodeURIComponent(textData)));
+
+    qr.addData(
+        unescape(
+            encodeURIComponent(textData)
+        )
+    );
+
     qr.make();
 
     const qrSize = size * 0.75;
+
     const margin = (size - qrSize) / 2;
+
     const tileW = qrSize / qr.getModuleCount();
 
     ctx.fillStyle = "white";
+
     ctx.fillRect(0,0,size,size);
+
     ctx.fillStyle = "black";
 
     for (let r=0;r<qr.getModuleCount();r++){
+
         for (let c=0;c<qr.getModuleCount();c++){
+
             if (qr.isDark(r,c)){
-                ctx.fillRect(margin + c*tileW, margin + r*tileW, tileW, tileW);
+
+                ctx.fillRect(
+                    margin + c*tileW,
+                    margin + r*tileW,
+                    tileW,
+                    tileW
+                );
             }
         }
     }
 
     // 中央文字
     const labelText = "今どこ救Ｒ";
+
     ctx.font = "bold 20px sans-serif";
-    const textWidth = ctx.measureText(labelText).width;
+
+    const textWidth =
+        ctx.measureText(labelText).width;
 
     ctx.fillStyle="white";
-    ctx.fillRect(size/2 - textWidth/2 -4, size/2-14, textWidth+8,28);
+
+    ctx.fillRect(
+        size/2 - textWidth/2 -4,
+        size/2-14,
+        textWidth+8,
+        28
+    );
 
     ctx.fillStyle="black";
+
     ctx.textAlign="center";
+
     ctx.textBaseline="middle";
-    ctx.fillText(labelText, size/2, size/2);
+
+    ctx.fillText(
+        labelText,
+        size/2,
+        size/2
+    );
 
     // 上下文字
     ctx.font="bold 18px sans-serif";
-    ctx.fillText("緊急連絡先", size/2, margin-10);
-    ctx.fillText("QRから電話", size/2, size-margin+25);
+
+    ctx.fillText(
+        "緊急連絡先",
+        size/2,
+        margin-10
+    );
+
+    ctx.fillText(
+        "QRから電話",
+        size/2,
+        size-margin+25
+    );
 }
 
 // ===== 保存 =====
 function downloadQRCodeImage() {
-    const canvas = document.getElementById("finalCanvas");
-    const link = document.createElement("a");
+
+    const canvas =
+        document.getElementById("finalCanvas");
+
+    const link =
+        document.createElement("a");
+
     link.download = "imadoko_qr.png";
-    link.href = canvas.toDataURL("image/png");
+
+    link.href =
+        canvas.toDataURL("image/png");
+
     link.click();
 }
 
 // ===== 有料解除 =====
 function unlockPremium() {
-    const pass = document.getElementById("passwordInput").value;
 
-    if (pass === "1234") { // ←任意変更
+    const pass =
+        document.getElementById("passwordInput").value;
+
+    if (pass === "1234") {
+
         maxCount = 100;
+
         usedCount = 0;
+
         locked = false;
 
         localStorage.setItem("maxCount", maxCount);
+
         localStorage.setItem("usedCount", usedCount);
+
         localStorage.setItem("locked", false);
 
         alert("有料版が有効になりました（100回）");
+
         updateDisplay();
+
     } else {
+
         alert("パスワードが違います");
     }
 }
+
 </script>
 
-***********
-<center><table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td><div style="border:1px solid #95a5a6;border-radius:.75rem;background-color:#FFFFFF;width:280px;margin:0px;padding:5px;text-align:center;overflow:hidden;"><table><tbody><tr><td style="width:128px"><a href="https://hb.afl.rakuten.co.jp/ichiba/4f77a9cd.e4d32c60.4f77a9ce.31978a5d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Festelia%2Fqr_seal%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIxMjh4MTI4IiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;"><img src="https://hbb.afl.rakuten.co.jp/hgb/4f77a9cd.e4d32c60.4f77a9ce.31978a5d/?me_id=1217542&item_id=10000174&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Festelia%2Fcabinet%2Fqrtan.jpg%3F_ex%3D128x128&s=128x128&t=picttext" border="0" style="margin:2px" alt="[商品価格に関しましては、リンクが作成された時点と現時点で情報が変更されている場合がございます。]" title="[商品価格に関しましては、リンクが作成された時点と現時点で情報が変更されている場合がございます。]"></a></td><td style="vertical-align:top;width:136px;display: block;"><p style="font-size:12px;line-height:1.4em;text-align:left;margin:0px;padding:2px 6px;word-wrap:break-word"><a href="https://hb.afl.rakuten.co.jp/ichiba/4f77a9cd.e4d32c60.4f77a9ce.31978a5d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Festelia%2Fqr_seal%2F&link_type=picttext&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJwaWN0dGV4dCIsInNpemUiOiIxMjh4MTI4IiwibmFtIjoxLCJuYW1wIjoicmlnaHQiLCJjb20iOjEsImNvbXAiOiJkb3duIiwicHJpY2UiOjEsImJvciI6MSwiY29sIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;">【ポイント5倍】大感謝祭 【送料無料】 LINE、Instagram、Litlink等への誘導、年賀状や名刺用に最適QRコードシール 15mm角は180枚セット 自由文字列 通常メール便発送 QRコード 名刺用 二次元バーコード 自由入力 メール便</a><br><span>価格：900円（税込、送料無料)</span> <span style="color:#BBB">(2025/12/24時点)</span></p></td></tr></tbody></table></div><br><p style="color:#000000;font-size:12px;line-height:1.4em;margin:5px;word-wrap:break-word"><br></p></td></tr></tbody></table></center>
-***********
+<!-- 楽天広告 -->
+<div style="
+max-width:100%;
+overflow-x:auto;
+display:flex;
+justify-content:center;
+">
 
-  <div class="footer-info">
-    <div class="info-text">
-      今回のアプリは如何だったでしょうか？会員サイト内にある100個のツール、ゲームからのご紹介です。他にも使えるアプリ、脳トレができるゲームや趣味に俳句、和歌などが利用できるサイトをご案内します。また大事な記録をサーバーに残せるサイトで、何かあった時に情報開示も指定できるサイトです。スマホのID、PWを記録しておくと安心です。
-    </div>
-    <img src="https://life-supporter.jp/sp/hxySQ4ff/8BaRR2j8/images/XS012098.jpg" style="display:block; margin:20px auto; max-width:100%;">
-    <div style="text-align:center;"><span style="font-size:18px;"><b>さらにアプリプレゼントはラインから。</b></span></div>
-  </div>
-<p></p>  
-<!-- LINE友達 -->
-<div style="display: flex; justify-content: center; align-items: center;">
-    <div>
-        <a href="https://g0qiltvg.autosns.app/line" class="addfriend_href">
-            <div style="margin: 0 auto; width: 200px; height: 200px;">
-                <div class="qrcode" style="margin:25px 0 0 0; text-align: center;"></div>
-            </div>
-        </a>
-    </div>
+<table border="0" cellpadding="0" cellspacing="0">
+<tbody>
+<tr>
+<td>
+
+<div style="
+border:1px solid #95a5a6;
+border-radius:.75rem;
+background-color:#FFFFFF;
+width:280px;
+margin:0px;
+padding:5px;
+text-align:center;
+overflow:hidden;
+">
+
+<table>
+<tbody>
+<tr>
+
+<td style="width:128px">
+
+<a href="https://hb.afl.rakuten.co.jp/ichiba/4f77a9cd.e4d32c60.4f77a9ce.31978a5d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Festelia%2Fqr_seal%2F&link_type=picttext"
+target="_blank"
+rel="nofollow sponsored noopener">
+
+<img src="https://hbb.afl.rakuten.co.jp/hgb/4f77a9cd.e4d32c60.4f77a9ce.31978a5d/?me_id=1217542&item_id=10000174&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Festelia%2Fcabinet%2Fqrtan.jpg%3F_ex%3D128x128&s=128x128&t=picttext">
+
+</a>
+
+</td>
+
+<td style="
+vertical-align:top;
+width:136px;
+display:block;
+">
+
+<p style="
+font-size:12px;
+line-height:1.4em;
+text-align:left;
+margin:0px;
+padding:2px 6px;
+word-wrap:break-word
+">
+
+<a href="https://hb.afl.rakuten.co.jp/ichiba/4f77a9cd.e4d32c60.4f77a9ce.31978a5d/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Festelia%2Fqr_seal%2F&link_type=picttext"
+target="_blank"
+rel="nofollow sponsored noopener">
+
+【ポイント5倍】QRコードシール
+
+</a>
+
+<br>
+
+<span>
+価格：900円（税込、送料無料)
+</span>
+
+</p>
+
+</td>
+
+</tr>
+</tbody>
+</table>
+
 </div>
+
+</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+
+<!-- footer -->
+<div class="footer-info">
+
+<div class="info-text">
+
+今回のアプリは如何だったでしょうか？
+会員サイト内にある100個のツール、
+ゲームからのご紹介です。
+
+他にも使えるアプリ、
+脳トレができるゲームや
+趣味に俳句、和歌などが
+利用できるサイトをご案内します。
+
+また大事な記録をサーバーに残せるサイトで、
+何かあった時に情報開示も
+指定できるサイトです。
+
+スマホのID、PWを記録しておくと安心です。
+
+</div>
+
+<img src="https://life-supporter.jp/sp/hxySQ4ff/8BaRR2j8/images/XS012098.jpg">
+
+<div style="text-align:center;">
+<span style="font-size:18px;">
+<b>さらにアプリプレゼントはラインから。</b>
+</span>
+</div>
+
+</div>
+
+<!-- LINE友達 -->
+<div style="
+display:flex;
+justify-content:center;
+align-items:center;
+">
+
+<div>
+
+<a href="https://g0qiltvg.autosns.app/line"
+class="addfriend_href">
+
+<div style="
+margin:0 auto;
+width:200px;
+height:200px;
+">
+
+<div class="qrcode"
+style="
+margin:25px 0 0 0;
+text-align:center;
+"></div>
+
+</div>
+
+</a>
+
+</div>
+
+</div>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script>
-    window.addEventListener("load", function() {
-        let url = new URL(window.location.href);
-        let get_params = {};
-        for(entry of url.searchParams) {
-            get_params[entry[0]] = entry[1];
-        }
-                    get_params['content_element_lp_id'] = "";
-                            get_params['scenario_id'] = "";
-                            get_params['partner_id'] = "A8ildpNc2q";
-                for(key in get_params) { 
-            let span = document.createElement('span');
-            let element_id = `proline-copy-qr-get-params-${key}`;
-            span.className = 'proline-copy-qr-get-params';
-            span.setAttribute('data-key', key);
-            span.setAttribute('data-value', get_params[key]);
-            span.setAttribute('id', element_id);
-            let old_element = document.querySelector(`#${element_id}`);
-            if(old_element) {
-                old_element.remove();
-            }
-            document.body.appendChild(span);
-        }
-    });
-</script>
+
 <script src="https://autosns.jp/js/zbp/jquery.qrcode.min.js"></script>
+
 <script src="https://g0qiltvg.autosns.app/copy-qr/js?height=200&show=1"></script>
-<p></p>
-<p></p>  
-<!-- ここまでQRコード -->  
-<div style="display: flex; justify-content: center;">
-    <a href="https://g0qiltvg.autosns.app/line" class="addfriend_href">
-        <img  width="300" src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png">
-    </a>
+
+<div style="
+display:flex;
+justify-content:center;
+">
+
+<a href="https://g0qiltvg.autosns.app/line"
+class="addfriend_href">
+
+<img width="300"
+src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png">
+
+</a>
+
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script>
-    window.addEventListener("load", function() {
-        let url = new URL(window.location.href);
-        let get_params = {};
-        for(entry of url.searchParams) {
-            get_params[entry[0]] = entry[1];
-        }
-                    get_params['content_element_lp_id'] = "";
-                            get_params['scenario_id'] = "";
-                            get_params['partner_id'] = "A8ildpNc2q";
-                for(key in get_params) { 
-            let span = document.createElement('span');
-            let element_id = `proline-copy-qr-get-params-${key}`;
-            span.className = 'proline-copy-qr-get-params';
-            span.setAttribute('data-key', key);
-            span.setAttribute('data-value', get_params[key]);
-            span.setAttribute('id', element_id);
-            let old_element = document.querySelector(`#${element_id}`);
-            if(old_element) {
-                old_element.remove();
-            }
-            document.body.appendChild(span);
-        }
-    });
-</script>
-<script src="https://autosns.jp/js/zbp/jquery.qrcode.min.js"></script>
-<script src="https://g0qiltvg.autosns.app/copy-qr/js?height=&show=0"></script>
-
-<!-- LINE友達 -->
 <br><br><br>
-<!-- 14日体験案内-->
-<div style="text-align:center;"><span style="font-size:18px;"><b>以下は14日会員サイト無料体験版のご案内です。</b></span></div>
-    <p style="text-align:center;"><img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012100.jpg" style="width: 200px;"></p>
-    <div style="text-align: center; margin-bottom: 50px;">
-  <a href="https://life-supporter.jp/lp/HRSuykFf" 
-     style="display: inline-block; 
-            padding: 20px 50px; 
-            background-color: #007bff; 
-            color: #ffffff; 
-            font-size: 22px; 
-            font-weight: bold; 
-            text-decoration: none; 
-            border-radius: 8px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: background-color 0.3s ease;">
-    無料体験案内を確認する
-  </a>
+
+<!-- 14日体験案内 -->
+<div style="text-align:center;">
+
+<span style="font-size:18px;">
+
+<b>
+以下は14日会員サイト無料体験版のご案内です。
+</b>
+
+</span>
+
 </div>
-<p></p>  
-<p></p>    
-<!-- 14日体験案内-->  
-  <input type="file" id="jsonFile" style="display:none">
-  <input type="file" id="excelFile" style="display:none" accept=".xlsx,.xls">
+
+<p style="text-align:center;">
+
+<img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012100.jpg"
+style="width:200px;">
+
+</p>
+
+<div style="
+text-align:center;
+margin-bottom:50px;
+">
+
+<a href="https://life-supporter.jp/lp/HRSuykFf"
+
+style="
+display:inline-block;
+padding:20px 50px;
+background-color:#007bff;
+color:#ffffff;
+font-size:22px;
+font-weight:bold;
+text-decoration:none;
+border-radius:8px;
+box-shadow:0 4px 6px rgba(0,0,0,0.1);
+transition:background-color 0.3s ease;
+">
+
+無料体験案内を確認する
+
+</a>
+
 </div>
+
+<input type="file" id="jsonFile" style="display:none">
+
+<input type="file"
+id="excelFile"
+style="display:none"
+accept=".xlsx,.xls">
+
+</body>
+</html>
