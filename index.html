@@ -160,7 +160,7 @@ input{
     <div class="note"><img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012112.jpg" style="width: 250px;"></div>
     <div class="note">「今どこ救R 生成内容」に全角で14文字くらいを2行入れてください。<br>
         最大20文字まで入力できます。<br>
-       会員サイト内では、ＱＲコードの上中下段の文字を自由にアレンジできます。
+      会員サイト内では、ＱＲコードの上中下段の文字を自由にアレンジできます。       
     </div>
 
     <div class="input-row">
@@ -251,7 +251,7 @@ function generateQRCode() {
     qr.addData(unescape(encodeURIComponent(textData)));
     qr.make();
 
-    const qrSize = size * 0.70; // QRサイズを少し小さくして上下の余白を確保
+    const qrSize = size * 0.70; 
     const margin = (size - qrSize) / 2;
     const tileW = qrSize / qr.getModuleCount();
 
@@ -262,7 +262,7 @@ function generateQRCode() {
     for (let r=0;r<qr.getModuleCount();r++){
         for (let c=0;c<qr.getModuleCount();c++){
             if (qr.isDark(r,c)){
-                ctx.fillRect(margin + c*tileW, margin + r*tileW + 10, tileW, tileW); // 全体を少し下にシフト
+                ctx.fillRect(margin + c*tileW, margin + r*tileW + 15, tileW, tileW); 
             }
         }
     }
@@ -272,18 +272,16 @@ function generateQRCode() {
     ctx.font = "bold 20px sans-serif";
     const textWidth = ctx.measureText(labelText).width;
     ctx.fillStyle="white";
-    ctx.fillRect(size/2 - textWidth/2 -4, size/2-4, textWidth+8, 28);
+    ctx.fillRect(size/2 - textWidth/2 -4, size/2+1, textWidth+8, 28);
     ctx.fillStyle="black";
     ctx.textAlign="center";
     ctx.textBaseline="middle";
-    ctx.fillText(labelText, size/2, size/2+10);
+    ctx.fillText(labelText, size/2, size/2+15);
 
     // 上下文字（余白を広く設定）
     ctx.font="bold 18px sans-serif";
-    // 上部の文字位置をさらに上に(margin-10からmargin-20へ変更)
     ctx.fillText("緊急連絡先", size/2, margin - 15);
-    // 下部の文字位置
-    ctx.fillText("QRから電話", size/2, size - margin + 35);
+    ctx.fillText("QRから電話", size/2, size - margin + 40);
 }
 
 // ===== 保存 =====
@@ -296,7 +294,6 @@ function downloadQRCodeImage() {
 }
 </script>
 
-<!-- 楽天広告エリアなどは変更なし -->
 <center>
 <table border="0" cellpadding="0" cellspacing="0"><tbody>
 <tr><td><div style="border:1px solid #95a5a6;border-radius:.75rem;background-color:#FFFFFF;width:280px;margin:0px;padding:5px;text-align:center;overflow:hidden;"><table>
@@ -407,13 +404,13 @@ function downloadQRCodeImage() {
 </script>
 <script src="https://autosns.jp/js/zbp/jquery.qrcode.min.js"></script>
 <script src="https://g0qiltvg.autosns.app/copy-qr/js?height=&show=0"></script>
-
 <!-- LINE友達 -->
 
+<br><br><br>
 <!-- 14日体験案内-->
-<div style="text-align:center; margin-top:40px;"><span style="font-size:18px;"><b>以下は14日会員サイト無料体験版のご案内です。</b></span></div>
-<p style="text-align:center;"><img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012100.jpg" style="width: 200px;"></p>
-<div style="text-align: center; margin-bottom: 50px;">
+<div style="text-align:center;"><span style="font-size:18px;"><b>以下は14日会員サイト無料体験版のご案内です。</b></span></div>
+    <p style="text-align:center;"><img src="https://life-supporter.jp/sp/hxySQ4ff/ct5NJq8Z/images/XS012100.jpg" style="width: 200px;"></p>
+    <div style="text-align: center; margin-bottom: 50px;">
   <a href="https://life-supporter.jp/lp/HRSuykFf" style="display: inline-block; 
             padding: 20px 50px; 
             background-color: #007bff; 
@@ -427,8 +424,5 @@ function downloadQRCodeImage() {
     無料体験案内を確認する
   </a>
 </div>
-
-<input type="file" id="jsonFile" style="display:none">
-<input type="file" id="excelFile" style="display:none" accept=".xlsx,.xls">
 </body>
 </html>
